@@ -11,6 +11,10 @@ use App\Address;
 use App\City;
 use App\Province;
 use App\Region;
+use App\PartnerServices;
+use App\Services;
+use Session;
+use DB;
 
 use Auth;
 
@@ -85,10 +89,22 @@ class PartnersController extends Controller
     }
 
     public function home(){
+       
+        if(Auth::user()->is_completed == false){
+            Session::flash('message','Complete your profile first!');
+            return redirect()->route('partner.profile');
+        }
         return view('partner.home');
     }
 
     public function showProfile(){
-        return view('partner.profile');
+        $all_services = Services::all();
+        $services = PartnerServices::select(DB::raw('services.*'))
+                            ->join('services','partner_services.service_id','=','services.id')
+                            ->get();
+
+        $available_services = $all_services->diff($services);
+
+        return view('partner.profile')->with('services',$services);
     }
 }

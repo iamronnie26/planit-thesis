@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('user_type');
             $table->integer('account_no')->nullable();
+            $table->boolean('is_completed')->default(false);
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

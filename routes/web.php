@@ -12,11 +12,9 @@
 */
 Auth::routes();
 
-
 Route::get('/',function(){
     return view('home.index');
 })->middleware('guest');
-
 
 Route::post('redirect','Auth\RegisterController@redirect')
 ->name('redirectRegister');
@@ -25,6 +23,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //Jobs Routes
 Route::resource('job','JobsController');
+
+//Wildcard Routes
+Route::get('/partner','PartnersController@home')->middleware('auth');
 
 //Public Routes
 Route::get('partner/register','PartnersController@showRegistrationForm')
