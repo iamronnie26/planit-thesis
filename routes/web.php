@@ -67,6 +67,8 @@ Route::prefix('partner')->middleware('partner')->group(function(){
         ->name('partner.profile');
     
     //POST Routes
+    Route::post('/partner_account','PartnersController@partner_account')
+        ->name('partner.account');
 
 
     //PUT Routes

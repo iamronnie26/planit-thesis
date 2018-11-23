@@ -102,9 +102,12 @@ class PartnersController extends Controller
         $services = PartnerServices::select(DB::raw('services.*'))
                             ->join('services','partner_services.service_id','=','services.id')
                             ->get();
-
         $available_services = $all_services->diff($services);
-
         return view('partner.profile')->with('services',$services);
+    }
+
+    public function partner_account(){
+        $partner = Auth::user()->account;
+        return response()->json($partner);
     }
 }
