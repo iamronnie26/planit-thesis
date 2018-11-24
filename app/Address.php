@@ -19,7 +19,4 @@ class Address extends Model
     public function region(){
         return $this->hasOne('App\Region','id','region_id');
     }
-    
-
-
 }

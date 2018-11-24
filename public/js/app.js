@@ -63024,15 +63024,47 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Profile = function (_Component) {
     _inherits(Profile, _Component);
 
-    function Profile() {
+    function Profile(props) {
         _classCallCheck(this, Profile);
 
-        return _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).call(this, props));
+
+        _this.state = {
+            business_name: "",
+            business_desc: "",
+            business_services: [],
+            isReady: false
+        };
+        return _this;
     }
 
     _createClass(Profile, [{
-        key: "render",
-        value: function render() {
+        key: "getPartnerData",
+        value: function getPartnerData() {
+            var _this2 = this;
+
+            axios.post('/partner/partner_account').then(function (response) {
+                _this2.setState({
+                    business_name: response.data.account.business_name,
+                    business_desc: response.data.account.business_desc,
+                    isReady: true
+                });
+            });
+        }
+    }, {
+        key: "componentWillMount",
+        value: function componentWillMount() {
+            this.getPartnerData();
+        }
+    }, {
+        key: "renderContent",
+        value: function renderContent() {
+            var accountSummary = {
+                business_name: this.state.business_name,
+                business_desc: this.state.business_desc,
+                isReady: this.state.isReady
+            };
+
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 "div",
                 { className: "container py-4" },
@@ -63042,11 +63074,20 @@ var Profile = function (_Component) {
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         "div",
                         { className: "col-md-8" },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__PartnerSummary__["a" /* default */], null),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__PartnerSummary__["a" /* default */], { accountSummary: accountSummary }),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__PartnerServices__["a" /* default */], null)
                     )
                 )
             );
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            if (this.state.isReady === true) {
+                return this.renderContent();
+            } else {
+                return "Loading";
+            }
         }
     }]);
 
@@ -63092,22 +63133,14 @@ var PartnerSummary = function (_Component) {
     }
 
     _createClass(PartnerSummary, [{
-        key: 'getPartnerData',
-        value: function getPartnerData() {
-            var _this2 = this;
-
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.post('/partner/partner_account').then(function (response) {
-                _this2.setState({
-                    business_name: response.data.business_name,
-                    business_desc: response.data.business_desc,
-                    isReady: true
-                });
-            });
-        }
-    }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
-            this.getPartnerData();
+            var accountSummary = this.props.accountSummary;
+            this.setState({
+                business_name: accountSummary.business_name,
+                business_desc: accountSummary.business_desc,
+                isReady: accountSummary.isReady
+            });
         }
     }, {
         key: 'render',

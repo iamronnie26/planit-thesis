@@ -11,18 +11,13 @@ class PartnerSummary extends Component{
         }
     }
 
-    getPartnerData(){
-        axios.post('/partner/partner_account').then(response=>{
-            this.setState({
-                business_name:response.data.business_name,
-                business_desc:response.data.business_desc,
-                isReady:true,
-            });
-        });
-    }
-
     componentWillMount(){
-        this.getPartnerData();
+        let accountSummary = this.props.accountSummary;
+        this.setState({
+           business_name:accountSummary.business_name,
+           business_desc:accountSummary.business_desc,
+           isReady:accountSummary.isReady,
+       })
     }
 
     render(){

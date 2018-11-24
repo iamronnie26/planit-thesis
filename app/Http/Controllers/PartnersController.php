@@ -101,13 +101,33 @@ class PartnersController extends Controller
         $all_services = Services::all();
         $services = PartnerServices::select(DB::raw('services.*'))
                             ->join('services','partner_services.service_id','=','services.id')
+                            ->where('partner_services.partner_id',Auth::id())
                             ->get();
         $available_services = $all_services->diff($services);
         return view('partner.profile')->with('services',$services);
     }
 
     public function partner_account(){
+        $query = "CONCAT(addresses.street_name,',',addresses.barangay,',',cities.city_name,',',provinces.province_name,',',regions.region_name)"; 
+
         $partner = Auth::user()->account;
-        return response()->json($partner);
+
+        $address = Partner::select(DB::raw($query))
+                            ->join('addresses','partners.address_id','=','addresses.id')
+                            ->join('cities','addresses.city_id','=','cities.id')
+                            ->join('provinces','addresses.province_id','=','provinces.id')
+                            ->join('regions','addresses.region_id','=','regions.id')
+                            // ->where('addresses.id',Auth::user()->address_id)
+                            ->get();
+
+        $services = PartnerServices::select(DB::raw('services.*'))
+                            ->join('services','partner_services.service_id','=','services.id')
+                            ->where('partner_services.partner_id',Auth::id())
+                            ->get();
+        return response()->json([
+            "account"=>$partner,
+            "address"=>$address,
+            "services"=>$services,
+        ]);
     }
 }
